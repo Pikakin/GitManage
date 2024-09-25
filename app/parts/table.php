@@ -88,14 +88,15 @@ if(isset($_POST['submit'])){
 include("app/functions/getIssues.php");
 
 if ($Issues_array) {
+    $issueId = 1;
     echo '<center><table border="1">';
     echo '<tr><th>イシューID</th><th>イシューURL</th><th>タイトル</th><th>ラベル</th><th>イシューコミットID</th><th>状態</th><th>優先順位</th><th>完了コミットID</th></tr>';
     foreach ($Issues_array as $Issues) {
         echo '<tr>';
-        echo '<td>' . $Issues['id'].'</td>';
-        echo '<td><a href="https://github.com/'.$user["username"].'/'.$_POST['nowRepo'].'/commits/'.$Issues['issue_commit'].'">コミットURL<a></br>'; 
-        echo '<a href="https://github.com/'.$user["username"].'/'.$_POST['nowRepo'].'/tree/'.$Issues['issue_commit'].'">ツリーURL<a></br>'; 
-        echo '<a href="https://github.com/'.$user["username"].'/'.$_POST['nowRepo'].'/compare/'.$Issues['issue_commit'].'...'.$Issues['complete_commit'].'">コミット差分URL<a></br>'; 
+        echo '<td>' . $issueId.'</td>';
+        echo '<td><a href="https://github.com/'.$user["username"].'/'.$_POST['nowRepoName'].'/commits/'.$Issues['issue_commit'].'">コミットURL<a></br>'; 
+        echo '<a href="https://github.com/'.$user["username"].'/'.$_POST['nowRepoName'].'/tree/'.$Issues['issue_commit'].'">ツリーURL<a></br>'; 
+        echo '<a href="https://github.com/'.$user["username"].'/'.$_POST['nowRepoName'].'/compare/'.$Issues['issue_commit'].'...'.$Issues['complete_commit'].'">コミット差分URL<a></br>'; 
         echo '</td>';
         echo '<td>' . ($Issues['issue_title']) . '</td>';
         echo '<td>' . ($Issues['label']) . '</td>';
@@ -127,7 +128,7 @@ if ($Issues_array) {
         echo '<input type="hidden" name="reloadToOwn" value= true >';
         echo '</form>';
         echo '</tr>';
-    
+        $issueId++;
     }
     echo '</table></center>';
 } else {
