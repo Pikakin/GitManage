@@ -1,180 +1,121 @@
 # GitManage
 
-GitHub管理システム - GitHubリポジトリの作成・管理を簡単に行えるWebアプリケーション
+GitManageは、リポジトリ情報やIssueを管理するためのPHPベースのWebアプリケーションです。ユーザーは自身のアカウントを作成し、関連するリポジトリ情報やタスク（Issue）をアプリケーション内に記録・追跡することができます。
 
 ## 概要
 
-GitManageは、GitHubリポジトリの管理を効率化するためのWebベースのシステムです。直感的なインターフェースでリポジトリの作成、閲覧、管理が可能で、GitHubのIssue管理機能も搭載しています。
+GitManageは、ユーザーが自身のプロジェクトに関連するリポジトリの情報（リポジトリ名など）や、各リポジトリに紐づくIssue（タスク、バグ、機能要求など）を管理するためWebベースのシステムです。記録されたIssueには、タイトル、ラベル、優先順位、ステータス、関連するコミットIDなどを設定できます。
 
 ## 機能
 
-- 🔐 ユーザーログイン・認証システム
-- 🏠 ランディングページ
-- 📊 ダッシュボード表示
-- 📁 GitHubリポジトリの一覧表示・管理
-- ➕ 新規リポジトリの作成
-- 🐛 GitHub Issues の取得・表示
-- 👤 アカウント情報の設定・管理
-- 🌙 ダークモード対応
-- 📱 レスポンシブデザイン
+* 🔐 **ユーザー認証システム**:
+    * アカウント作成機能（ユーザー名、パスワード）
+    * ログイン機能
+    * 入力値の検証（ユーザー名、パスワードのフォーマット・文字数チェック）
+    * セッション管理によるログイン状態の維持
+* 🏠 **ランディングページ**: アプリケーションの初期導入ページ
+* 📊 **ダッシュボード**:
+    * 登録済みリポジトリの一覧表示
+    * 各リポジトリに紐づくIssueの概要表示
+* 📁 **リポジトリ管理**:
+    * 新規リポジトリ情報（リポジトリ名）のアプリケーション内データベースへの登録
+* 📝 **Issue管理**:
+    * リポジトリに紐づくIssueの登録（タイトル、ラベル、優先順位、ステータス、イシューコミットID、完了コミットID）
+    * 登録済みIssueの一覧表示（関連GitHubコミットへのリンク表示機能を含む）
+    * Issue情報の更新（ステータス、優先順位、完了コミットID）
+* 🌙 **ダークモード対応**: UIのライトモード/ダークモード切り替え機能
+* ⏳ **ローディング画面**: ページ遷移時のローディング表示
+* 📱 **レスポンシブデザイン要素**: 限定的ながら画面幅に応じた表示調整（右コンテンツエリアの表示制御など） (JavaScript `checkWidth` 関数)
 
 ## 技術スタック
 
-- **バックエンド**: PHP
-- **データベース**: MySQL/MariaDB
-- **フロントエンド**: HTML, CSS, JavaScript
-- **API**: GitHub API
-- **フォント**: Google Fonts (Rampart One, M PLUS Rounded 1c, Noto Sans JP)
+* **バックエンド**: PHP
+* **データベース**: MySQL (MariaDBでも動作する可能性あり)
+* **フロントエンド**: HTML, CSS, JavaScript
+* **フォント**: Google Fonts (Rampart One, M PLUS Rounded 1c, Noto Sans JP)
 
 ## セットアップ
 
 ### 必要な環境
 
-- PHP 7.4以上
-- MySQL 5.7以上 または MariaDB 10.2以上
-- Webサーバー (Apache/Nginx)
-- GitHub Personal Access Token
+* PHP 7.4以上 (推奨)
+* MySQL 5.7以上 または MariaDB 10.2以上
+* Webサーバー (Apache/Nginxなど)
 
 ### インストール手順
 
-1. リポジトリをクローン
-```bash
-git clone https://github.com/Pikakin/GitManage.git
-```
-
-2. プロジェクトディレクトリに移動
-```bash
-cd GitManage
-```
-
-3. データベース設定
-   - `app/database/connect.php`でデータベース接続情報を設定
-
-4. GitHub API設定
-   - GitHub Personal Access Tokenを取得
-   - アプリケーション内でトークンを設定
-
-5. Webサーバーの設定
-   - DocumentRootをプロジェクトのルートディレクトリに設定
-
-6. ブラウザでアクセス
-   ```
-   http://localhost/GitManage
-   ```
+1.  リポジトリをクローンまたはダウンロードします。
+    ```bash
+    git clone [https://github.com/Pikakin/GitManage.git](https://github.com/Pikakin/GitManage.git)
+    ```
+2.  プロジェクトディレクトリに移動します。
+    ```bash
+    cd GitManage
+    ```
+3.  データベース設定:
+    * `app/database/connect.php` ファイル内のデータベース接続情報（ユーザー名、パスワード、データベース名）を自身の環境に合わせて編集します。
+    * 必要に応じて、アプリケーションが使用するテーブル（例: `users`, `repositories`, `issues`）をデータベースに作成してください（CREATE TABLE文は提供されていません）。
+4.  Webサーバーの設定:
+    * DocumentRootをプロジェクトのルートディレクトリ（`GitManage/`）に設定します。
+5.  ブラウザでアクセスします（例: `http://localhost/` または設定したURL）。
 
 ## ディレクトリ構造
 
-```
-GitManage/
-├── index.php                           # メインエントリーポイント
-├── app/
-│   ├── database/
-│   │   └── connect.php                 # データベース接続設定
-│   ├── functions/
-│   │   ├── checkInputedValue.php       # 入力値検証
-│   │   ├── getIssues.php              # GitHub Issues取得
-│   │   ├── getRepositories.php        # リポジトリ情報取得
-│   │   ├── isAccountInfoSet.php       # アカウント情報確認
-│   │   ├── Login.php                  # ログイン処理
-│   │   └── SetAccountSESSION.php      # セッション管理
-│   └── parts/
-│       ├── createRepo.php             # リポジトリ作成画面
-│       ├── dashboard.php              # ダッシュボード
-│       ├── header.php                 # ヘッダーコンポーネント
-│       ├── Landing_Page.php           # ランディングページ
-│       ├── left-content.php           # 左サイドコンテンツ
-│       ├── Loading.php                # ローディング画面
-│       ├── LoginForm.php              # ログインフォーム
-│       ├── main-content.php           # メインコンテンツ
-│       ├── PrintValueError.php        # エラー表示
-│       ├── right-content.php          # 右サイドコンテンツ
-│       ├── sidebar.php                # サイドバー
-│       └── table.php                  # テーブル表示
-└── assets/
-    ├── moon.png                       # ダークモードアイコン
-    ├── sun.png                        # ライトモードアイコン
-    ├── style.css                      # メインスタイルシート
-    └── Lading_Page/
-        ├── image.jpg                  # ランディングページ画像
-        └── LPstyle.css               # ランディングページ専用CSS
-```
+GitManage/<br>
+├── index.php                           # メインエントリーポイント<br>
+├── app/<br>
+│   ├── database/<br>
+│   │   └── connect.php                 # データベース接続設定<br>
+│   ├── functions/<br>
+│   │   ├── checkInputedValue.php       # 入力値検証<br>
+│   │   ├── getIssues.php              # Issue情報取得 (DBから)<br>
+│   │   ├── getRepositories.php        # リポジトリ情報取得 (DBから)<br>
+│   │   ├── isAccountInfoSet.php       # アカウント情報確認・ページ振り分け<br>
+│   │   ├── Login.php                  # ログイン・アカウント作成処理<br>
+│   │   └── SetAccountSESSION.php      # セッション管理<br>
+│   └── parts/<br>
+│       ├── createRepo.php             # リポジトリ登録フォーム・処理<br>
+│       ├── dashboard.php              # ダッシュボード表示<br>
+│       ├── header.php                 # ヘッダーコンポーネント<br>
+│       ├── Landing_Page.php           # ランディングページ<br>
+│       ├── left-content.php           # 左サイドコンテンツ (リポジトリ一覧など)<br>
+│       ├── Loading.php                # ローディング画面表示<br>
+│       ├── LoginForm.php              # ログイン・アカウント作成フォーム<br>
+│       ├── main-content.php           # メインコンテンツ表示エリア<br>
+│       ├── PrintValueError.php        # エラーメッセージ表示<br>
+│       ├── right-content.php          # 右サイドコンテンツ (現状は限定的な使用)<br>
+│       ├── sidebar.php                # サイドバー (現状はサンプル的な内容)<br>
+│       └── table.php                  # Issue登録フォーム・一覧表示・更新処理<br>
+└── assets/<br>
+    ├── moon.png                       # ダークモードアイコン<br>
+    ├── sun.png                        # ライトモードアイコン<br>
+    ├── style.css                      # メインスタイルシート<br>
+    └── Lading_Page/<br>
+        ├── image.jpg                  # ランディングページ画像<br>
+        └── LPstyle.css               # ランディングページ専用CSS<br>
+
 
 ## 使用方法
 
-### 1. 初回セットアップ
-- アプリケーションにアクセスするとランディングページが表示されます
-- アカウント情報を設定してGitHubアカウントと連携します
+1.  **初回アクセスとアカウント作成/ログイン**:
+    * アプリケーションにアクセスするとランディングページが表示されます。
+    * 「アカウントを作成」または「ログイン」を選択し、必要な情報を入力して進みます。
+2.  **ダッシュボード**:
+    * ログイン後、メインダッシュボードが表示され、登録されているリポジトリの概要を確認できます。
+    * 左サイドの「Top repositories」セクションからリポジトリを選択したり、新規リポジトリ情報を登録したりできます。
+3.  **リポジトリ情報の登録**:
+    * 左サイドの「New ..」ボタンから、新しいリポジトリの名前を登録できます。
+4.  **Issueの管理**:
+    * ダッシュボードまたは左サイドからリポジトリを選択すると、そのリポジトリに紐づくIssueの一覧が表示され、Issueの登録・更新が行えます。
+    * Issueにはタイトル、ラベル（バグ/機能要求）、優先順位、ステータス（未着手/着手中/完了）、関連するコミットIDなどを記録できます。
+5.  **テーマ切り替え**:
+    * ヘッダーの月/太陽アイコンでダークモード/ライトモードを切り替えられます。
 
-### 2. ダッシュボード
-- ログイン後、メインダッシュボードでリポジトリの概要を確認できます
-- サイドバーから各機能にアクセス可能です
+## 注意事項
 
-### 3. リポジトリ管理
-- 既存のGitHubリポジトリを一覧表示
-- リポジトリの詳細情報を確認
-- 新しいリポジトリの作成
-
-### 4. Issue管理
-- GitHubのIssueを取得・表示
-- Issue の詳細確認
-
-### 5. テーマ切り替え
-- ヘッダーの月/太陽アイコンでダークモード/ライトモードを切り替え
-
-## 主要機能
-
-### GitHub API連携
-- リポジトリ情報の取得
-- Issue情報の取得
-- 新規リポジトリの作成
-
-### ユーザー管理
-- セッション管理
-- アカウント情報の永続化
-- 入力値の検証
-
-### UI/UX
-- レスポンシブデザイン
-- ダークモード対応
-- ローディング画面
-- エラーハンドリング
-
-## 設定
-
-### GitHub Personal Access Token
-1. GitHub Settings → Developer settings → Personal access tokens
-2. 必要な権限を設定:
-   - `repo` (リポジトリアクセス)
-   - `read:user` (ユーザー情報読み取り)
-3. 生成されたトークンをアプリケーションに設定
-
-## トラブルシューティング
-
-### よくある問題
-- **GitHub API制限**: レート制限に達した場合は時間をおいて再試行
-- **データベース接続エラー**: `connect.php`の設定を確認
-- **権限エラー**: GitHub tokenの権限設定を確認
-
-## 貢献
-
-1. このリポジトリをフォーク
-2. 機能ブランチを作成 (`git checkout -b feature/AmazingFeature`)
-3. 変更をコミット (`git commit -m 'Add some AmazingFeature'`)
-4. ブランチにプッシュ (`git push origin feature/AmazingFeature`)
-5. プルリクエストを作成
-
-## ライセンス
-
-このプロジェクトのライセンス情報については、LICENSEファイルを参照してください。
+* このアプリケーションは、現状ではGitHub APIと直接連携してリポジトリやIssueを自動的に同期する機能は持っていません。情報はユーザーが手動でアプリケーション内のデータベースに登録・管理する形となります。
+* データベースのテーブル構造（CREATE TABLE文）は提供されていないため、セットアップ時に別途定義する必要があります。
 
 ## 作者
 
 [@Pikakin](https://github.com/Pikakin)
-
-## サポート
-
-問題や質問がある場合は、[Issues](https://github.com/Pikakin/GitManage/issues)で報告してください。
-
----
-
-**注意**: このアプリケーションを使用する前に、GitHub Personal Access Tokenの適切な管理とセキュリティ対策を確実に行ってください。
